@@ -18,13 +18,13 @@ class Listing(object):
     sold_sqft = 841.75
     baths = '1f 0h'
     pets = '--'
-    sale_price = Money(amount='250000', 'USD')
+    sale_price = Money('250000', 'USD')
     sale_date = date(2016, 1, 27)
     off_mkt_date = date(2015, 12, 15)
     outdoor_space = 'No'
     living_area = 297
     year_built = 1900
-    list_price = Money(amount='264900', 'USD')
+    list_price = Money('264900', 'USD')
     list_date = date(2015, 11, 16)
     orig_price = Money('264900', 'USD')
     assoc_fee = Money('107.90', 'USD')
