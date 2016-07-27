@@ -16,6 +16,7 @@ class KML(object):
     def GenerateFromListing(self, listing):
         location = self.geolocater.geocode(Listing.address)
 
+        # POC right hurr; just adding a single name and coordinate
         self.KML = KML_ElementMaker.Placemark(
             KML_ElementMaker.name(self.name),
                 KML_ElementMaker.Point(
