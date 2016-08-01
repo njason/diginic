@@ -3,11 +3,11 @@ from lxml import etree
 from geopy.geocoders import GoogleV3
 import time
 
-from listingsample import Listing
+from listing import Listing
 
 
 class KML(object):
-    __GEOCODES_PER_SECOND = 5
+    __GEOCODES_PER_SECOND = 50
 
     def __init__(self, name, directory):
         self.KML = ''

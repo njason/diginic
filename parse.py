@@ -1,13 +1,10 @@
-#!/usr/bin/env python
-
-import argparse
 import re
 from datetime import datetime
 from money import Money
 
 from bs4 import BeautifulSoup
 
-from listingsample import Listing
+from listing import Listing
 
 
 def itol(iter):
@@ -107,20 +104,15 @@ def parse_node(node):
     return listing
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('file')
+def parse_listing_file(file):
+    soup = BeautifulSoup(file, 'html.parser')
 
-params = parser.parse_args()
+    the_piece = soup.findAll(text='MLS #:')
 
-soup = BeautifulSoup(open(params.file), 'html.parser')
+    listings = []
 
-the_piece = soup.findAll(text='MLS #:')
+    for chillin in the_piece:
+        node = chillin.parent.parent.parent.parent
+        listings.append(parse_node(node))
 
-listings = []
-
-for chillin in the_piece:
-    node = chillin.parent.parent.parent.parent
-    listings.append(parse_node(node))
-
-import ipdb
-ipdb.set_trace()
+    return listings
