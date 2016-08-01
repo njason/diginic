@@ -7,7 +7,7 @@ from listing import Listing
 
 
 class KML(object):
-    __GEOCODES_PER_SECOND = 50
+    __GEOCODES_PER_SECOND = 30
 
     def __init__(self, name, directory):
         self.KML = ''
