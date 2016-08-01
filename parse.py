@@ -2,7 +2,7 @@
 
 import argparse
 import re
-from datetime import date, datetime
+from datetime import datetime
 from money import Money
 
 from bs4 import BeautifulSoup
@@ -21,24 +21,31 @@ def itol(iter):
 
 
 def parse_string(node, label):
-    return node.getText().replace(label, '').strip()
-
-
-def parse_date(node):
     '''
     keep it DRY bro
     '''
+    return node.getText().replace(label, '').strip()
+
+
+def parse_int(node, label):
+    return int(parse_string(node, label))
+
+
+def parse_date(node):
     return datetime.strptime(node.find(text=re.compile(
         '\d{1,2}/\d{1,2}/\d{4}')).strip(), '%m/%d/%Y').date()
 
 
 def parse_money(node, label):
-    return Money(node.getText().replace(label + '$', '').replace(',', ''),
-                 'USD')
+    str = node.getText().replace(label + '$', '').replace(',', '')
+    if str == '':
+        return Money('0', 'USD')
+
+    return Money(str, 'USD')
 
 
 def parse_sqft(node):
-    return float(node.find(text=re.compile('\d{1,}\.\d{1,}')).strip())
+    return float(node.find(text=re.compile('\d{1,}\.?\d{1,}?')).strip())
 
 
 def parse_node(node):
@@ -47,9 +54,9 @@ def parse_node(node):
     in_ = itol(children[1])
     da = itol(children[3])
     club = itol(children[4])
-    bottle = itol(children[4])
-    full = itol(children[5])
-    of_bub = itol(children[6])
+    bottle = itol(children[6])
+    full = itol(children[8])
+    of_bub = itol(children[10])
 
     listing = Listing()
 
@@ -77,6 +84,27 @@ def parse_node(node):
 
     # fourth row
     listing.style = parse_string(club[0], 'Style: ')
+    listing.outdoor_space = parse_string(club[1], 'Outdoor Space: ')
+    listing.assoc_fee = parse_money(club[2], 'Assoc.Fee: ')
+
+    # fifth row
+    listing.rooms = parse_int(bottle[0], 'Rooms: ')
+    listing.beds = parse_int(bottle[1], 'Beds: ')
+    listing.baths = parse_string(bottle[2], 'Baths: ')
+    listing.living_area = parse_int(bottle[3], 'Living Area: ')
+    listing.tax = parse_money(bottle[4], 'Tax: ')
+
+    # sixth row
+    listing.garage = parse_int(full[0], 'Garage: ')
+    listing.parking = parse_int(full[1], 'Parking: ')
+    listing.pets = parse_string(full[2], 'Pets: ')
+    listing.year_built = parse_int(full[3], 'Year Built: ')
+    listing.fy = parse_int(full[4], 'Fy: ')
+
+    # seventh row
+    listing.remarks = parse_string(of_bub[0], 'Remarks: ')
+
+    return listing
 
 
 parser = argparse.ArgumentParser()
@@ -88,6 +116,11 @@ soup = BeautifulSoup(open(params.file), 'html.parser')
 
 the_piece = soup.findAll(text='MLS #:')
 
+listings = []
+
 for chillin in the_piece:
     node = chillin.parent.parent.parent.parent
-    parse_node(node)
+    listings.append(parse_node(node))
+
+import ipdb
+ipdb.set_trace()
