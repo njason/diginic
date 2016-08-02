@@ -1,5 +1,5 @@
 from datetime import date
-
+from decimal import Decimal
 from money import Money
 
 
@@ -7,7 +7,8 @@ class Listing(object):
     def __init__(self, sample=False):
         if sample:
             self.mls = '71933254'
-            self.address = '32 Sciarappa St U:1 Cambridge, MA:East Cambridge 02141'
+            self.address = '32 Sciarappa St U:1 Cambridge, MA:East Cambridge \
+            02141'
             self.style = 'Condo - Low-Rise'
             self.rooms = 2
             self.garage = 0
@@ -61,3 +62,14 @@ class Listing(object):
             self.assoc_fee = None
             self.tax = None
             self.fy = None
+
+    def to_kml_description(self):
+        return 'Time: ' + 'DOM: ' + str(self.dom) + ', DTO: ' + str(self.dto) \
+                + '\n' + 'Sale Price: ' + str(self.sale_price) + '\n' + \
+                'Sale Date: ' + str(self.sale_date) + '\n' + u'MLS #: ' + \
+                str(self.mls) + '\n' + u'$/Sqft: ' + str(self.sale_price / \
+                Decimal(self.sold_sqft)) + '\n' + 'Type: ' + self.style + '\n' \
+                + 'Sqft: list - ' + str(self.list_sqft) + ', sold - ' + \
+                str(self.sold_sqft) + '\n' + 'Year Built: ' + \
+                str(self.year_built) + '\n' + 'Parking: ' + \
+                str(self.parking) + '\n' + 'Garage: ' + str(self.garage)

@@ -2,58 +2,90 @@ from pykml.factory import KML_ElementMaker
 from lxml import etree
 from geopy.geocoders import GoogleV3
 import time
-
-from listing import Listing
+import re
+import unicodedata
 
 
 class KML(object):
-    __GEOCODES_PER_SECOND = 30
+    GEOCODES_PER_SECOND = 15
+    SLEEP_TIMEOUT = 1
 
-    def __init__(self, name, directory):
+    @staticmethod
+    def slugify(value):
+        '''
+        Django's "slug" function, taken from SO
+
+        Normalizes string, converts to lowercase, removes non-alpha characters,
+        and converts spaces to hyphens.
+        '''
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+        value = unicode(re.sub('[^\w\s-]', '', value).strip().lower())
+        value = re.sub('[-\s]+', '-', value)
+        return value
+
+    def __init__(self, filename):
         self.KML = ''
-        self.name = name
-        self.save_directory = directory
+        self.name = filename
+        self.save_location = './' + self.slugify(filename) + '.kml'
         self.geolocater = GoogleV3()
 
-    def GenerateFromListings(self, listings):
+    def generate_from_listings(self, listings):
         self.KML = KML_ElementMaker.Folder()
 
         # we only have X amount of calls/sec and /day, so we need to throttle
-        # ourselves
+        # ourselves.
         geocode_count = 0
+        listings_to_process = True
+        geocode_failures = []
+        failures = 0
+        FAILURE_LIMIT = 1000 # stop trying after this many failures
 
-        for listing in listings:
-            if geocode_count < KML.__GEOCODES_PER_SECOND:
-                try:
-                    location = self.geolocater.geocode(listing.address)
+        while listings_to_process:
+            if len(geocode_failures) > 0:
+                listings = geocode_failures
+                geocode_failures = []
 
-                    geocode_count += 1
+            for listing in listings:
+                if geocode_count < KML.GEOCODES_PER_SECOND:
+                    try:
+                        location = self.geolocater.geocode(listing.address)
 
-                    self.KML.append(KML_ElementMaker.Placemark(
-                        KML_ElementMaker.name(self.name),
-                            KML_ElementMaker.description(listing.remarks),
-                            KML_ElementMaker.Point(
-                                KML_ElementMaker.coordinates(
-                                    str(location.longitude) + ',' +
-                                    str(location.latitude))
+                        geocode_count += 1
+
+                        self.KML.append(KML_ElementMaker.Placemark(
+                            KML_ElementMaker.name(listing.address),
+                                KML_ElementMaker.description(
+                                    listing.to_kml_description()),
+                                KML_ElementMaker.Point(
+                                    KML_ElementMaker.coordinates(
+                                        str(location.longitude) + ',' +
+                                        str(location.latitude))
+                                )
                             )
                         )
-                    )
-                except Exception as e:
-                    # probably went over the Google geocode request limit
-                    print 'Error encountered:'
-                    print e
-            else:
-                print 'sleeping...'
-                time.sleep(1)
-                geocode_count = 0
+                    except Exception as e:
+                        print 'Error encountered:'
+                        print e
 
-        self.Save()
+                        geocode_failures.append(listing)
+                        failures += 1
 
-    def Save(self):
-        with open(self.save_directory + 'FILE_TO_UPLOAD.kml', 'w') as saved_KML:
+                        if failures >= FAILURE_LIMIT:
+                            listings_to_process = False
+                            print 'Too many failed attempts to geolocate. '\
+                            + 'Program will shut down without finishing.'
+
+                            break
+                else:
+                    print 'sleeping...'
+                    time.sleep(KML.SLEEP_TIMEOUT)
+                    geocode_count = 0
+
+            if len(geocode_failures) == 0:
+                listings_to_process = False
+
+            self.save()
+
+    def save(self):
+        with open(self.save_location, 'w') as saved_KML:
             saved_KML.write(etree.tostring(self.KML))
-
-if __name__ == '__main__':
-    kml = KML('Some TESTIN\' UPINDAPIECE', './')
-    kml.GenerateFromListings([Listing])
