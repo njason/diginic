@@ -65,11 +65,13 @@ class Listing(object):
 
     def to_kml_description(self):
         return 'Time: ' + 'DOM: ' + str(self.dom) + ', DTO: ' + str(self.dto) \
-                + '\n' + 'Sale Price: ' + str(self.sale_price) + '\n' + \
-                'Sale Date: ' + str(self.sale_date) + '\n' + u'MLS #: ' + \
-                str(self.mls) + '\n' + u'$/Sqft: ' + str(self.sale_price / \
-                Decimal(self.sold_sqft)) + '\n' + 'Type: ' + self.style + '\n' \
+                + '\n' + 'Sale Price: ' + self.sale_price.format('en_US') + '\n' + \
+                'Sale Date: ' + str(self.sale_date) + '\n' + 'Address: ' + \
+                self.address + '\n' + u'$/Sqft: ' + (self.sale_price / \
+                Decimal(self.sold_sqft)).format('en_US') + '\n' + \
+                'Type: ' + self.style + '\n' \
                 + 'Sqft: list - ' + str(self.list_sqft) + ', sold - ' + \
                 str(self.sold_sqft) + '\n' + 'Year Built: ' + \
                 str(self.year_built) + '\n' + 'Parking: ' + \
-                str(self.parking) + '\n' + 'Garage: ' + str(self.garage)
+                str(self.parking) + '\n' + 'Garage: ' + str(self.garage) + \
+                '\n\n' + self.remarks

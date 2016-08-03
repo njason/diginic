@@ -1,6 +1,7 @@
 from pykml.factory import KML_ElementMaker
 from lxml import etree
 from geopy.geocoders import GoogleV3
+from datetime import datetime
 import time
 import re
 import unicodedata
@@ -23,7 +24,8 @@ class KML(object):
         value = re.sub('[-\s]+', '-', value)
         return value
 
-    def __init__(self, filename):
+    def __init__(self,
+                 filename=u'UPLOAD' + datetime.now().strftime('%Y%m%d%H%M%S')):
         self.KML = ''
         self.name = filename
         self.save_location = './' + self.slugify(filename) + '.kml'
@@ -53,7 +55,7 @@ class KML(object):
                         geocode_count += 1
 
                         self.KML.append(KML_ElementMaker.Placemark(
-                            KML_ElementMaker.name(listing.address),
+                            KML_ElementMaker.name('MLS #: ' + listing.mls),
                                 KML_ElementMaker.description(
                                     listing.to_kml_description()),
                                 KML_ElementMaker.Point(

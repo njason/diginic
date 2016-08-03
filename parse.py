@@ -54,7 +54,7 @@ def parse_node(node):
 
         # first row
         chillen = itol(children[0])
-        listing.mlb = chillen[0].find_all(text=re.compile('\d{8}'))[0].strip()
+        listing.mls = chillen[0].find_all(text=re.compile('\d{8}'))[0].strip()
         listing.status = parse_string(chillen[1], 'Status: ')
         ginz = chillen[2].find_all(text=re.compile('\d*'))
         listing.dom = int(ginz[1].strip())
