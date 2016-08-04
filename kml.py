@@ -82,6 +82,7 @@ class KML(object):
                     print 'sleeping...'
                     time.sleep(KML.SLEEP_TIMEOUT)
                     geocode_count = 0
+                    geocode_failures.append(listing)
 
             if len(geocode_failures) == 0:
                 listings_to_process = False
