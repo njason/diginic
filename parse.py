@@ -103,6 +103,7 @@ def parse_node(node):
         of_bub = itol(children[10])
         listing.remarks = parse_string(of_bub[0], 'Remarks: ')
     except:
+        # I'm a monster
         pass
 
     return listing
