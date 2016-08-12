@@ -55,7 +55,7 @@ class KML(object):
                         geocode_count += 1
 
                         self.KML.append(KML_ElementMaker.Placemark(
-                            KML_ElementMaker.name('MLS #: ' + listing.mls),
+                            KML_ElementMaker.name(listing.sale_price.format('en_US')),
                                 KML_ElementMaker.description(
                                     listing.to_kml_description()),
                                 KML_ElementMaker.Point(
