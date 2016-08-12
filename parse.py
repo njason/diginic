@@ -65,7 +65,7 @@ def parse_node(node):
         # second row
         in_ = itol(children[1])
         address1 = in_[0].getText()
-        listing.list_sqft = parse_sqft(in_[1])
+        listing.price_sqft_list = Money(str(parse_sqft(in_[1])), 'USD')
         listing.sale_date = parse_date(in_[2])
         listing.list_date = parse_date(in_[3])
 
@@ -73,7 +73,7 @@ def parse_node(node):
         da = itol(children[3])
         address2 = da[0].getText()
         listing.address = address1 + ' ' + address2
-        listing.sold_sqft = parse_sqft(da[1])
+        listing.price_sqft_sold = Money(str(parse_sqft(da[1])), 'USD')
         listing.off_mkt_date = parse_date(da[2])
         listing.orig_price = parse_money(da[3], 'Orig. Price:  ')
 

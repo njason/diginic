@@ -18,8 +18,8 @@ class Listing(object):
             self.parking = 0
             self.dom = 29
             self.dto = 18
-            self.list_sqft = 891.92
-            self.sold_sqft = 841.75
+            self.price_sqft_list = Money('891.92', 'USD')
+            self.price_sqft_sold = Money('841.75', 'USD')
             self.baths = '1f 0h'
             self.pets = '--'
             self.sale_price = Money('250000', 'USD')
@@ -46,8 +46,8 @@ class Listing(object):
             self.parking = None
             self.dom = None
             self.dto = None
-            self.list_sqft = None
-            self.sold_sqft = None
+            self.price_sqft_list = None
+            self.price_sqft_sold = None
             self.baths = None
             self.pets = None
             self.sale_price = None
@@ -67,11 +67,11 @@ class Listing(object):
         return 'Time: ' + 'DOM: ' + str(self.dom) + ', DTO: ' + str(self.dto) \
                 + '\n' + 'Sale Price: ' + self.sale_price.format('en_US') + '\n' + \
                 'Sale Date: ' + str(self.sale_date) + '\n' + 'Address: ' + \
-                self.address + '\n' + u'$/Sqft: ' + (self.sale_price / \
-                Decimal(self.sold_sqft)).format('en_US') + '\n' + \
+                self.address + '\n' + u'Sqft: ' + str(round(self.sale_price.amount / \
+                self.price_sqft_sold.amount)) + '\n' + \
                 'Type: ' + self.style + '\n' \
-                + 'Sqft: list - ' + str(self.list_sqft) + ', sold - ' + \
-                str(self.sold_sqft) + '\n' + 'Year Built: ' + \
+                + '$/Sqft: list - ' + self.price_sqft_list.format('en_US') + ', sold - ' + \
+                self.price_sqft_sold.format('en_US') + '\n' + 'Year Built: ' + \
                 str(self.year_built) + '\n' + 'Parking: ' + \
                 str(self.parking) + '\n' + 'Garage: ' + str(self.garage) + \
                 '\n\n' + self.remarks
