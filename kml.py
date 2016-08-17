@@ -48,41 +48,40 @@ class KML(object):
                 geocode_failures = []
 
             for listing in listings:
-                if geocode_count < KML.GEOCODES_PER_SECOND:
-                    try:
-                        location = self.geolocater.geocode(listing.address)
-
-                        geocode_count += 1
-
-                        self.KML.append(KML_ElementMaker.Placemark(
-                            KML_ElementMaker.name(listing.sale_price.format('en_US')),
-                                KML_ElementMaker.description(
-                                    listing.to_kml_description()),
-                                KML_ElementMaker.Point(
-                                    KML_ElementMaker.coordinates(
-                                        str(location.longitude) + ',' +
-                                        str(location.latitude))
-                                )
-                            )
-                        )
-                    except Exception as e:
-                        print 'Error encountered:'
-                        print e
-
-                        geocode_failures.append(listing)
-                        failures += 1
-
-                        if failures >= FAILURE_LIMIT:
-                            listings_to_process = False
-                            print 'Too many failed attempts to geolocate. '\
-                            + 'Program will shut down without finishing.'
-
-                            break
-                else:
+                if geocode_count > KML.GEOCODES_PER_SECOND:
                     print 'sleeping...'
                     time.sleep(KML.SLEEP_TIMEOUT)
                     geocode_count = 0
+                
+                try:
+                    location = self.geolocater.geocode(listing.address)
+
+                    geocode_count += 1
+
+                    self.KML.append(KML_ElementMaker.Placemark(
+                        KML_ElementMaker.name(listing.sale_price.format('en_US')),
+                            KML_ElementMaker.description(
+                                listing.to_kml_description()),
+                            KML_ElementMaker.Point(
+                                KML_ElementMaker.coordinates(
+                                    str(location.longitude) + ',' +
+                                    str(location.latitude))
+                            )
+                        )
+                    )
+                except Exception as e:
+                    print 'Error encountered:'
+                    print e
+
                     geocode_failures.append(listing)
+                    failures += 1
+
+                    if failures >= FAILURE_LIMIT:
+                        listings_to_process = False
+                        print 'Too many failed attempts to geolocate. '\
+                        + 'Program will shut down without finishing.'
+
+                        break
 
             if len(geocode_failures) == 0:
                 listings_to_process = False
