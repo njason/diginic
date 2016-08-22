@@ -24,11 +24,15 @@ class KML(object):
         value = re.sub('[-\s]+', '-', value)
         return value
 
-    def __init__(self,
-                 filename=u'UPLOAD' + datetime.now().strftime('%Y%m%d%H%M%S')):
+    def __init__(self, filename=None, test=False):
+
+        if filename is None:
+            filename = u'UPLOAD' + datetime.now().strftime('%Y%m%d%H%M%S')
+
         self.KML = ''
         self.name = filename
         self.save_location = './' + self.slugify(filename) + '.kml'
+        self.TEST = test
         self.geolocater = GoogleV3()
 
     def generate_from_listings(self, listings):
@@ -40,7 +44,7 @@ class KML(object):
         listings_to_process = True
         geocode_failures = []
         failures = 0
-        FAILURE_LIMIT = 1000 # stop trying after this many failures
+        FAILURE_LIMIT = 1000  # stop trying after this many failures
 
         while listings_to_process:
             if len(geocode_failures) > 0:
@@ -52,23 +56,24 @@ class KML(object):
                     print 'sleeping...'
                     time.sleep(KML.SLEEP_TIMEOUT)
                     geocode_count = 0
-                
                 try:
-                    location = self.geolocater.geocode(listing.address)
+                    if self.TEST:
+                        location_str = '40.0, 40.0'
+                    else:
+                        location = self.geolocater.geocode(listing.address)
+                        location_str = str(location.longitude) + ',' + \
+                            str(location.latitude)
 
                     geocode_count += 1
 
                     self.KML.append(KML_ElementMaker.Placemark(
-                        KML_ElementMaker.name(listing.sale_price.format('en_US')),
-                            KML_ElementMaker.description(
+                        KML_ElementMaker.name(
+                            listing.sale_price.format('en_US')),
+                        KML_ElementMaker.description(
                                 listing.to_kml_description()),
-                            KML_ElementMaker.Point(
-                                KML_ElementMaker.coordinates(
-                                    str(location.longitude) + ',' +
-                                    str(location.latitude))
-                            )
-                        )
-                    )
+                        KML_ElementMaker.Point(
+                                KML_ElementMaker.coordinates(location_str))
+                    ))
                 except Exception as e:
                     print 'Error encountered:'
                     print e
@@ -78,8 +83,8 @@ class KML(object):
 
                     if failures >= FAILURE_LIMIT:
                         listings_to_process = False
-                        print 'Too many failed attempts to geolocate. '\
-                        + 'Program will shut down without finishing.'
+                        print 'Too many failed attempts to geolocate. ' + \
+                            'Program will shut down without finishing.'
 
                         break
 

@@ -1,5 +1,4 @@
 from datetime import date
-from decimal import Decimal
 from money import Money
 
 
@@ -12,7 +11,21 @@ class Listing(object):
             self.style = 'Condo - Low-Rise'
             self.rooms = 2
             self.garage = 0
-            self.remarks = 'Beautiful Snug Smart Studio a 4 minute walk to Lechmere T station, 2 minutes to Bus line to Harvard & Tufts and just a few blocks to the Tech Hub & Kendall square. This 2-room smart plan with plenty of natural light allows a renovated kitchen with handsome tall Cherry cabinets, Stainless Steel appliances, black granite counter and breakfast bar, as well as a living space with built-ins closets, Murphy Bed and book shelves. Wood floorings & recessed lightings. Tiled bathroom with tub and window. 3 closets in unit & big private storage room in basement. A wonderful opportunity for a City pied-a-terre, investment or first home (pay less than rent). It feels larger than the square footage indicates with a phenomenal use of the space.'
+            self.remarks = 'Beautiful Snug Smart Studio a 4 minute walk to ' +\
+                'Lechmere T station, 2 minutes to Bus line to Harvard &' +\
+                'Tufts and just a few blocks to the Tech Hub & Kendall ' +\
+                'square. This 2-room smart plan with plenty of natural ' +\
+                'light allows a renovated kitchen with handsome tall ' +\
+                'Cherry cabinets, Stainless Steel appliances, black ' +\
+                'granite counter and breakfast bar, as well as a living ' +\
+                'space with built-ins closets, Murphy Bed and book ' +\
+                'shelves. Wood floorings & recessed lightings. Tiled ' +\
+                'bathroom with tub and window. 3 closets in unit & big ' +\
+                'private storage room in basement. A wonderful ' +\
+                'opportunity for a City pied-a-terre, investment or ' +\
+                'first home (pay less than rent). It feels larger than ' +\
+                'the square footage indicates with a phenomenal use of ' +\
+                'the space.'
             self.status = 'SLD'
             self.beds = 0
             self.parking = 0
@@ -64,14 +77,16 @@ class Listing(object):
             self.fy = None
 
     def to_kml_description(self):
-        return 'Time: ' + 'DOM: ' + str(self.dom) + ', DTO: ' + str(self.dto) \
-                + '\n' + 'Sale Price: ' + self.sale_price.format('en_US') + '\n' + \
-                'Sale Date: ' + str(self.sale_date) + '\n' + 'Address: ' + \
-                self.address + '\n' + u'Sqft: ' + str(round(self.sale_price.amount / \
-                self.price_sqft_sold.amount)) + '\n' + \
-                'Type: ' + self.style + '\n' \
-                + '$/Sqft: list - ' + self.price_sqft_list.format('en_US') + ', sold - ' + \
-                self.price_sqft_sold.format('en_US') + '\n' + 'Year Built: ' + \
-                str(self.year_built) + '\n' + 'Parking: ' + \
-                str(self.parking) + '\n' + 'Garage: ' + str(self.garage) + \
-                '\n\n' + self.remarks
+        return 'Time: ' + 'DOM: ' + str(self.dom) + ', DTO: ' +\
+                str(self.dto) + '\n' + 'Sale Price: ' +\
+                self.sale_price.format('en_US') + '\n' +\
+                'Sale Date: ' + str(self.sale_date) + '\n' + 'Address: ' +\
+                self.address + '\n' + u'Sqft: ' +\
+                str(round(self.sale_price.amount /
+                          self.price_sqft_sold.amount)) + '\n' +\
+                'Type: ' + self.style + '\n' + '$/Sqft: list - ' +\
+                self.price_sqft_list.format('en_US') + ', sold - ' +\
+                self.price_sqft_sold.format('en_US') + '\n' +\
+                'Year Built: ' + str(self.year_built) + '\n' +\
+                'Parking: ' + str(self.parking) + '\n' + 'Garage: ' +\
+                str(self.garage) + '\n\n' + unicode(self.remarks)
