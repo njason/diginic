@@ -77,16 +77,16 @@ class Listing(object):
             self.fy = None
 
     def to_kml_description(self):
-        return 'Time: ' + 'DOM: ' + str(self.dom) + ', DTO: ' +\
-                str(self.dto) + '\n' + 'Sale Price: ' +\
+        return 'Time: ' + 'DOM: ' + unicode(self.dom) + ', DTO: ' +\
+                unicode(self.dto) + '\n' + 'Sale Price: ' +\
                 self.sale_price.format('en_US') + '\n' +\
-                'Sale Date: ' + str(self.sale_date) + '\n' + 'Address: ' +\
+                'Sale Date: ' + unicode(self.sale_date) + '\n' + 'Address: ' +\
                 self.address + '\n' + u'Sqft: ' +\
-                str(round(self.sale_price.amount /
-                          self.price_sqft_sold.amount)) + '\n' +\
+                unicode(round(self.sale_price.amount /
+                              self.price_sqft_sold.amount)) + '\n' +\
                 'Type: ' + self.style + '\n' + '$/Sqft: list - ' +\
                 self.price_sqft_list.format('en_US') + ', sold - ' +\
                 self.price_sqft_sold.format('en_US') + '\n' +\
-                'Year Built: ' + str(self.year_built) + '\n' +\
-                'Parking: ' + str(self.parking) + '\n' + 'Garage: ' +\
-                str(self.garage) + '\n\n' + unicode(self.remarks)
+                'Year Built: ' + unicode(self.year_built) + '\n' +\
+                'Parking: ' + unicode(self.parking) + '\n' + 'Garage: ' +\
+                unicode(self.garage) + '\n\n' + unicode(self.remarks)

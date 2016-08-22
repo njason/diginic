@@ -44,7 +44,7 @@ class KML(object):
         listings_to_process = True
         geocode_failures = []
         failures = 0
-        FAILURE_LIMIT = 1000  # stop trying after this many failures
+        FAILURE_LIMIT = 10  # stop trying after this many failures
 
         while listings_to_process:
             if len(geocode_failures) > 0:
