@@ -59,6 +59,8 @@ class KML(object):
 
                 try:
                     if self.GEOCODE:
+                        if listing.address is None:
+                            continue
                         location = self.geolocater.geocode(listing.address)
                         location_str = str(location.longitude) + ',' + \
                             str(location.latitude)
