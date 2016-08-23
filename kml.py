@@ -32,7 +32,7 @@ class KML(object):
         self.KML = ''
         self.name = filename
         self.save_location = './' + self.slugify(filename) + '.kml'
-        self.TEST = test
+        self.GEOCODE = not test
         self.geolocater = GoogleV3()
 
     def generate_from_listings(self, listings):
@@ -52,17 +52,18 @@ class KML(object):
                 geocode_failures = []
 
             for listing in listings:
-                if geocode_count > KML.GEOCODES_PER_SECOND:
+                if self.GEOCODE and geocode_count > KML.GEOCODES_PER_SECOND:
                     print 'sleeping...'
                     time.sleep(KML.SLEEP_TIMEOUT)
                     geocode_count = 0
+
                 try:
-                    if self.TEST:
-                        location_str = '40.0, 40.0'
-                    else:
+                    if self.GEOCODE:
                         location = self.geolocater.geocode(listing.address)
                         location_str = str(location.longitude) + ',' + \
                             str(location.latitude)
+                    else:
+                        location_str = '40.0, 40.0'
 
                     geocode_count += 1
 

@@ -77,16 +77,48 @@ class Listing(object):
             self.fy = None
 
     def to_kml_description(self):
-        return 'Time: ' + 'DOM: ' + unicode(self.dom) + ', DTO: ' +\
-                unicode(self.dto) + '\n' + 'Sale Price: ' +\
-                self.sale_price.format('en_US') + '\n' +\
-                'Sale Date: ' + unicode(self.sale_date) + '\n' + 'Address: ' +\
-                self.address + '\n' + u'Sqft: ' +\
-                unicode(round(self.sale_price.amount /
-                              self.price_sqft_sold.amount)) + '\n' +\
-                'Type: ' + self.style + '\n' + '$/Sqft: list - ' +\
-                self.price_sqft_list.format('en_US') + ', sold - ' +\
-                self.price_sqft_sold.format('en_US') + '\n' +\
-                'Year Built: ' + unicode(self.year_built) + '\n' +\
-                'Parking: ' + unicode(self.parking) + '\n' + 'Garage: ' +\
-                unicode(self.garage) + '\n\n' + unicode(self.remarks)
+        description = u''
+        if self.dom is not None:
+            description += 'DOM: ' + unicode(self.dom) + '\n'
+
+        if self.dto is not None:
+            description += 'DTO: ' + unicode(self.dto) + '\n'
+
+        if self.sale_price is not None:
+            description += 'Sale Price: ' + \
+                    self.sale_price.format('en_US') + '\n'
+
+        if self.sale_date is not None:
+            description += 'Sale Date: ' + unicode(self.sale_date) + '\n'
+
+        if self.address is not None:
+            description += 'Address: ' + self.address + '\n'
+
+        if self.sale_price is not None and self.price_sqft_sold is not None:
+            description += 'Sqft: ' + unicode(round(
+                self.sale_price.amount / self.price_sqft_sold.amount)) + '\n'
+
+        if self.style is not None:
+            description += 'Type: ' + unicode(self.style) + '\n'
+
+        if self.price_sqft_list is not None:
+            description += '$/Sqft list: ' + \
+                    self.price_sqft_list.format('en_US')
+
+        if self.price_sqft_sold is not None:
+            description += '$/Sqft sold: ' + \
+                    self.price_sqft_sold.format('en_US') + '\n'
+
+        if self.year_built is not None:
+            description += 'Year Built: ' + unicode(self.year_built) + '\n'
+
+        if self.parking is not None:
+            description += 'Parking: ' + unicode(self.parking) + '\n'
+
+        if self.garage is not None:
+            description += 'Garage: ' + unicode(self.garage)
+
+        if self.remarks is not None:
+            description += '\n\n' + unicode(self.remarks)
+
+        return description

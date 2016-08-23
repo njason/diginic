@@ -21,7 +21,10 @@ def parse_string(node, label):
     '''
     keep it DRY bro
     '''
-    return node.getText().replace(label, '').strip()
+    str = node.getText().replace(label, '').strip()
+    if str is None:
+        return u''
+    return unicode(str)
 
 
 def parse_int(node, label):
@@ -104,6 +107,7 @@ def parse_node(node):
         listing.remarks = parse_string(of_bub[0], 'Remarks: ')
     except:
         # I'm a monster
+        listing.remarks = u''
         pass
 
     return listing
