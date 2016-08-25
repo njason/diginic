@@ -78,6 +78,10 @@ class Listing(object):
 
     def to_kml_description(self):
         description = u''
+
+        if self.mls is not None:
+            description += 'MLS #: ' + unicode(self.mls) + '\n'
+
         if self.dom is not None:
             description += 'DOM: ' + unicode(self.dom) + '\n'
 
