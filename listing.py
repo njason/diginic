@@ -75,6 +75,7 @@ class Listing(object):
             self.assoc_fee = None
             self.tax = None
             self.fy = None
+            self.location_str = None
 
     def to_kml_description(self):
         description = u''

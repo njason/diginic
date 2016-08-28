@@ -62,21 +62,13 @@ class KML(object):
                         if listing.address is None:
                             continue
                         location = self.geolocater.geocode(listing.address)
-                        location_str = str(location.longitude) + ',' + \
+                        listing.location_str = str(location.longitude) + ',' + \
                             str(location.latitude)
                     else:
-                        location_str = '40.0, 40.0'
+                        listing.location_str = '40.0, 40.0'
 
                     geocode_count += 1
 
-                    self.KML.append(KML_ElementMaker.Placemark(
-                        KML_ElementMaker.name(
-                            listing.sale_price.format('en_US')),
-                        KML_ElementMaker.description(
-                                listing.to_kml_description()),
-                        KML_ElementMaker.Point(
-                                KML_ElementMaker.coordinates(location_str))
-                    ))
                 except Exception as e:
                     print 'Error encountered:'
                     print e
@@ -94,7 +86,20 @@ class KML(object):
             if len(geocode_failures) == 0:
                 listings_to_process = False
 
-            self.save()
+        listings.sort(key=lambda x: x.sale_price)
+
+        for listing in listings:
+            if listing.location_str is not None:
+                self.KML.append(KML_ElementMaker.Placemark(
+                    KML_ElementMaker.name(
+                        listing.sale_price.format('en_US')),
+                    KML_ElementMaker.description(
+                            listing.to_kml_description()),
+                    KML_ElementMaker.Point(
+                            KML_ElementMaker.coordinates(listing.location_str))
+                ))
+
+        self.save()
 
     def save(self):
         with open(self.save_location, 'w') as saved_KML:
