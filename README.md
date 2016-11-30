@@ -7,7 +7,7 @@ Google Maps automation tool for a friend
 * Add dir to PATH var
 * Install visual C++ for Python 2.7
 * download lxml.whl at http://www.lfd.uci.edu/~gohlke/pythonlibs/
-* `$ python -m pip install .whl`
+* `$ python -m pip install lxml.whl`
 * Download git
 * `$ git clone git://..`
 * `$ python -m pip install -r reqs.txt`
